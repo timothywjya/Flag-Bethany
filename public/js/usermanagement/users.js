@@ -16,11 +16,9 @@ $(document).ready(function () {
     });
 
     function inputdatauser(data) {
-        console.log(data);
         dTableUser = $("#tabel-user").DataTable({
             responsive: true,
             destroy: true,
-            scrollX: true,
             data: data,
             columns: [
                 {
@@ -57,4 +55,49 @@ $(document).ready(function () {
         });
     }
 
+    $(document).on("click", "#btn-delete", function () {
+        var ids = dTableUser.row($(this).parents("tr")).data().id;
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will delete The Account',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    },
+                    type: "delete",
+                    url: "delete-data-user",
+                    data: {
+                        ids: ids
+                    },
+                    dataType: "JSON",
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        }).then((value) => {
+                            window.location.href = "home";
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            title: "Error",
+                            text: xhr.responseJSON.message,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    },
+                });
+            }
+        });
+    });
 });

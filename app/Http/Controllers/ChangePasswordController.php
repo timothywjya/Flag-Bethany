@@ -24,9 +24,13 @@ class ChangePasswordController extends Controller
                 return response()->json(["status" => "error", "message" => "Password lama yang anda masukan salah"], 400);
             }
 
+            DB::beginTransaction();
+
             DB::table("users")
                 ->where("id", Auth::user()->id)
                 ->update(["password" => bcrypt($request->password)]);
+
+            DB::commit();
 
             return response()->json(["status" => "success", "message" => "Password berhasil diubah."], 200);
         } catch (Exception $e) {

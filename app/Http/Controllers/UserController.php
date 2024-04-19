@@ -29,7 +29,8 @@ class UserController extends Controller
                     "users.role_id",
                     "users.email as email",
                     "users.username as username",
-                    "roles.role_name as roles"
+                    "roles.role_name as roles",
+                    "users.deleted_at"
                 );
 
             if (Auth::user()->role_id == 2) {
@@ -75,6 +76,27 @@ class UserController extends Controller
             return response()->json(["status" => "success", "data" => $role, "message" => "Get Data Successfully"], 200);
         } catch (Exception $e) {
             return response()->json(["status" => "error", "message" => "Failed to Get Data Successfully", "errormessage" => $e->getMessage()], 400);
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (HashingIds::decodeUser($request->ids) == Auth::user()->id) {
+                return response()->json(["status" => "error", "message" => "Anda tidak dapat menghapus diri sendiri"], 400);
+            }
+
+            User::where('id', HashingIds::decodeUser($request->ids))
+                ->delete();
+
+            DB::commit();
+
+            return response()->json(["status" => "success", "message" => "Delete User Successfully"], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(["status" => "error", "message" => "Failed to Delete User", "errormessage" => $e->getMessage()], 400);
         }
     }
 }

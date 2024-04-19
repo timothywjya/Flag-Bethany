@@ -35,33 +35,7 @@
     </div>
 </div>
 @stop
+
 @push('js')
-<form action="" id="delete-form" method="post">
-    @method('delete')
-    @csrf
-</form>
-
-<script>
-    $('#tabel-user').DataTable({
-        "responsive": true,
-    });
-
-    function notificationBeforeDisable(event, el) {
-        event.preventDefault();
-        if (confirm('Are you sure you will disable the account? ')) {
-            $("#delete-form").attr('action', $(el).attr('href'));
-            $("#delete-form").submit();
-        }
-    }
-
-    function notificationBeforeEnable(event, el) {
-        event.preventDefault();
-        if (confirm('Are you sure you will activate the account? ')) {
-            $("#delete-form").attr('action', $(el).attr('href'));
-            $("#delete-form").submit();
-        }
-    }
-</script>
-
 <script src="{{ url('/js/usermanagement/users.js?time=') . rand() }}"></script>
 @endpush
