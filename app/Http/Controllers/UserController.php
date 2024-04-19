@@ -22,7 +22,15 @@ class UserController extends Controller
         try {
             $users = DB::table('users')
                 ->join("roles", "roles.id", "=", "users.role_id")
-                ->select("users.name", "users.email", "users.id", "users.role_id", "users.email", "users.username", "roles.role_name");
+                ->select(
+                    "users.name as name",
+                    "users.email as email",
+                    "users.id",
+                    "users.role_id",
+                    "users.email as email",
+                    "users.username as username",
+                    "roles.role_name as roles"
+                );
 
             if (Auth::user()->role_id == 2) {
                 $users = $users->whereIn('role_id', [2, 3, 4, 5]);

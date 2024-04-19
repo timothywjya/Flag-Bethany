@@ -230,12 +230,12 @@ return [
         // Sidebar items:
         [
             'text' => 'User Managements',
-            'url' => 'admin/settings',
+            'url' => 'user-management',
             'icon' => 'fas fa-fw fa-id-card',
         ],
         [
             'text' => 'change_password',
-            'url' => 'admin/settings',
+            'url' => 'change-my-password',
             'icon' => 'fas fa-fw fa-lock',
         ],
 

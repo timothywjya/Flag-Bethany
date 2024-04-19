@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Exception;
 
 class ProfileController extends Controller
 {
@@ -10,4 +14,6 @@ class ProfileController extends Controller
     {
         return view('profile.index');
     }
+
+    
 }
