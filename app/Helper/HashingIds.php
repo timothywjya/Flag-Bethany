@@ -43,7 +43,7 @@ class HashingIds
             $decoding = new Hashids('Melv1nA4d3linE', 12);
             return $decoding->decode($data)[0];
         } catch (Exception $e) {
-            return "Failed to Decode Data";
+            return "Failed to Decode Data" . $e->getMessage();
         }
     }
 

@@ -233,11 +233,6 @@ return [
             'url' => 'user-management',
             'icon' => 'fas fa-fw fa-id-card',
         ],
-        [
-            'text' => 'change_password',
-            'url' => 'change-my-password',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
 
         ['header' => 'account_settings'],
         [
@@ -252,7 +247,7 @@ return [
         ],
         [
             'text' => 'change_password',
-            'url' => 'admin/settings',
+            'url' => 'change-my-password',
             'icon' => 'fas fa-fw fa-lock',
         ],
         ['header' => 'MEMBER CM Bethany'],

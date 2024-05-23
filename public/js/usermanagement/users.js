@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var dTableUser;
+    var ids;
 
     $.ajax({
         headers: {
@@ -56,7 +57,7 @@ $(document).ready(function () {
     }
 
     $(document).on("click", "#btn-delete", function () {
-        var ids = dTableUser.row($(this).parents("tr")).data().id;
+        ids = dTableUser.row($(this).parents("tr")).data().id;
 
         Swal.fire({
             title: 'Are you sure?',
@@ -85,7 +86,7 @@ $(document).ready(function () {
                             icon: "success",
                             confirmButtonText: "OK",
                         }).then((value) => {
-                            window.location.href = "home";
+                            window.location.href = "user-management";
                         });
                     },
                     error: function (xhr, status, error) {
@@ -94,6 +95,104 @@ $(document).ready(function () {
                             text: xhr.responseJSON.message,
                             icon: "error",
                             confirmButtonText: "OK",
+                        }).then((value) => {
+                            window.location.href = "user-management";
+                        });
+                    },
+                });
+            }
+        });
+    });
+
+    function getDataRoles() {
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "get",
+            url: "get-data-roles",
+            dataType: "JSON",
+            success: function (response) {
+                var html = ''
+                for (let index = 0; index < response.data; index++) {
+                    html += "<option value=" + response.data[i].ids + ">" + response.data[i].name + "</option>"
+
+                }
+            }
+        });
+    }
+
+    $("#close-update").click(function (e) {
+        $("#update-users").modal("toggle");
+        $("#update-nama-pengguna").val("");
+        $("#update-username-pengguna").val("");
+        $("#update-email-pengguna").val("");
+        $("#update-password-pengguna").val("");
+        $("#confirmation-password").val("");
+    });
+
+    $(document).on("click", "#btn-edit", function () {
+        ids = dTableUser.row($(this).parents("tr")).data().id;
+        console.log(ids);
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "get",
+            url: "edit-data-user",
+            data: {
+                ids: ids,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                $("#update-users").modal("toggle");
+                $("#update-nama-pengguna").val();
+                $("#update-username-pengguna").val();
+                $("#update-email-pengguna").val();
+                getDataRoles();
+            }
+        });
+    });
+
+    $("#save-user-update").click(function (e) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will change The information of Account',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    },
+                    type: "post",
+                    url: "update-data-user",
+                    data: {
+                        ids: ids
+                    },
+                    dataType: "JSON",
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        }).then((value) => {
+                            window.location.href = "user-management";
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            title: "Error",
+                            text: xhr.responseJSON.message,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        }).then((value) => {
+                            window.location.href = "user-management";
                         });
                     },
                 });

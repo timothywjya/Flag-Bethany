@@ -33,8 +33,9 @@ Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('user-management', [UserController::class, 'index']);
-    
-    Route::delete('delete-data-user', [UserController::class, 'destroy']);
+    Route::get('edit-data-user', [UserController::class, 'editDataUser']);
+    Route::delete('delete-data-user', [UserController::class, 'destroyDataUser']);
+    Route::delete('restore-data-user', [UserController::class, 'restoreDataUser']);
 
     Route::get('get-data-users', [UserController::class, 'getDataUser']);
     Route::get('get-data-roles', [UserController::class, 'getDataRole']);

@@ -41,6 +41,7 @@ class UserController extends Controller
 
             foreach ($users as $user) {
                 $user->id = HashingIds::encodeUser($user->id);
+                $user->role_id = HashingIds::encodeRole($user->role_id);
             }
 
             return response()->json(["status" => "success", "data" => $users, "message" => "Get Data Successfully"], 200);
@@ -79,13 +80,52 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(Request $request)
+    public function storeDataUser(Request $req)
+    {
+        $dataUser = [];
+        $dataMember = [];
+    }
+
+    public function editDataUser(Request $request)
+    {
+        $id = HashingIds::decodeUser($request->ids);
+
+        try {
+            $data = DB::table("users")
+                ->select("username", "name", "email")
+                ->where("users.id", $id)
+                ->get();
+
+            return response()->json([
+                "status" => "success", "data" => $data,
+                "message" => "Get Data Successfully"
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => "error",
+                "message" => "Failed to Get Data", "errormessage" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function updateDataUser(Request $request)
+    {
+        try {
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function destroyDataUser(Request $request)
     {
         try {
             DB::beginTransaction();
 
             if (HashingIds::decodeUser($request->ids) == Auth::user()->id) {
-                return response()->json(["status" => "error", "message" => "Anda tidak dapat menghapus diri sendiri"], 400);
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Anda tidak dapat menghapus diri sendiri"
+                ], 400);
             }
 
             User::where('id', HashingIds::decodeUser($request->ids))
@@ -93,10 +133,36 @@ class UserController extends Controller
 
             DB::commit();
 
-            return response()->json(["status" => "success", "message" => "Delete User Successfully"], 200);
+            return response()->json([
+                "status" => "success",
+                "message" => "Delete User Successfully"
+            ], 200);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(["status" => "error", "message" => "Failed to Delete User", "errormessage" => $e->getMessage()], 400);
+            return response()->json([
+                "status" => "error",
+                "message" => "Failed to Delete User",
+                "errormessage" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function restoreDataUser(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            User::where('id', HashingIds::decodeUser($request->ids))
+                ->restore();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                "status" => "error",
+                "message" => "Failed to Retore User",
+                "errormessage" => $e->getMessage()
+            ], 400);
         }
     }
 }
