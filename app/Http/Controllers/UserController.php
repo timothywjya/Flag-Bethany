@@ -44,9 +44,17 @@ class UserController extends Controller
                 $user->role_id = HashingIds::encodeRole($user->role_id);
             }
 
-            return response()->json(["status" => "success", "data" => $users, "message" => "Get Data Successfully"], 200);
+            return response()->json([
+                "status" => "success",
+                "data" => $users,
+                "message" => "Get Data Successfully"
+            ], 200);
         } catch (Exception $e) {
-            return response()->json(["status" => "error", "message" => "Failed to Get Data Successfully", "errormessage" => $e->getMessage()], 400);
+            return response()->json([
+                "status" => "error",
+                "message" => "Failed to Get Data Successfully",
+                "errormessage" => $e->getMessage()
+            ], 400);
         }
     }
 
@@ -74,9 +82,17 @@ class UserController extends Controller
                 $roles->id = HashingIds::encodeRole($roles->id);
             }
 
-            return response()->json(["status" => "success", "data" => $role, "message" => "Get Data Successfully"], 200);
+            return response()->json([
+                "status" => "success",
+                "data" => $role,
+                "message" => "Get Data Successfully"
+            ], 200);
         } catch (Exception $e) {
-            return response()->json(["status" => "error", "message" => "Failed to Get Data Successfully", "errormessage" => $e->getMessage()], 400);
+            return response()->json([
+                "status" => "error",
+                "message" => "Failed to Get Data Successfully",
+                "errormessage" => $e->getMessage()
+            ], 400);
         }
     }
 
@@ -103,7 +119,8 @@ class UserController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 "status" => "error",
-                "message" => "Failed to Get Data", "errormessage" => $e->getMessage()
+                "message" => "Failed to Get Data",
+                "errormessage" => $e->getMessage()
             ], 400);
         }
     }
@@ -111,8 +128,27 @@ class UserController extends Controller
     public function updateDataUser(Request $request)
     {
         try {
-        } catch (\Throwable $th) {
-            //throw $th;
+            $data = [
+                "username" => $request->username,
+                "name" => $request->name,
+                "email" => $request->email,
+                "role_id" => HashingIds::decodeRole($request->role_id)
+            ];
+
+            DB::table('users')
+                ->where("id", HashingIds::decodeUser($request->ids))
+                ->update($data);
+
+            return response()->json([
+                "status" => "success",
+                "message" => "Update User Successfully"
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => "error",
+                "message" => "Failed to Update User",
+                "errormessage" => $e->getMessage()
+            ], 400);
         }
     }
 

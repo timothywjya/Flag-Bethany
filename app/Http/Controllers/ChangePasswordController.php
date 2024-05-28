@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,10 @@ class ChangePasswordController extends Controller
             $user = Auth::user();
 
             if (!Hash::check($request->current_password, $user->password)) {
-                return response()->json(["status" => "error", "message" => "Password lama yang anda masukan salah"], 400);
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Your Password is Incorrect"
+                ], 400);
             }
 
             DB::beginTransaction();
@@ -32,10 +36,58 @@ class ChangePasswordController extends Controller
 
             DB::commit();
 
-            return response()->json(["status" => "success", "message" => "Password berhasil diubah."], 200);
+            return response()->json([
+                "status" => "success",
+                "message" => "Password has been Changed"
+            ], 200);
         } catch (Exception $e) {
             DB::rollback();
-            return response()->json(["status" => "error", "message" => "Something Broken", "errormessage" => $e->getMessage()], 400);
+            return response()->json([
+                "status" => "error",
+                "message" => "Something Broken",
+                "errormessage" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function verificationPassword(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Your Password is Incorrect"
+                ], 400);
+            }
+
+            return response()->json([
+                "status" => "success",
+                "message" => "Your Password is Correct"
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => "error",
+                "message" => "Your Password Confirmation is Wrong",
+                "errormessage" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function DisableUser(Request $request)
+    {
+        try {
+            User::where("id", Auth::user()->id)
+                ->delete();
+
+            return response()->json(["status" => "success", "message" => "Sorry, But We Banned your Account"]);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => "error",
+                "message" => "Your Password Confirmation is Wrong",
+                "errormessage" => $e->getMessage()
+            ], 400);
         }
     }
 }
