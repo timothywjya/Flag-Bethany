@@ -98,8 +98,26 @@ class UserController extends Controller
 
     public function storeDataUser(Request $req)
     {
-        $dataUser = [];
-        $dataMember = [];
+        try{
+            $dataUser = [
+                "email" => $req->email,
+                "password" => $req->password,
+                "username" => $req->username, 
+                "name" => $req->name, 
+                "created_by" => HashingIds::decodeUser($request->ids)
+            ];
+            
+            $dataMember = [
+                ""
+            ];
+            
+        }catch(Exception $e){
+            return response()->json([
+                "status" => "error",
+                "message" => "Failed to Get Data Successfully",
+                "errormessage" => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function editDataUser(Request $request)
